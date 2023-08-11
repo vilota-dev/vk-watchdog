@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
               u->send_text(result);
           });
 
-  CROW_ROUTE(app, "/uploadfile")
+  CROW_ROUTE(app, "/upload_file")
           .methods(crow::HTTPMethod::Post)([](const crow::request& req) {
             crow::multipart::message file_message(req);
             for (const auto& part : file_message.part_map)
@@ -159,8 +159,19 @@ int main(int argc, char **argv) {
             return crow::response(200);
           });
 
+  CROW_ROUTE(app, "/upload_json")
+          .methods(crow::HTTPMethod::Post)([](const crow::request& req) {
+            auto x = crow::json::load(req.body);
+            if (!x) {
+              return crow::response(400);
+            }
+            CROW_LOG_INFO << "Received JSON: " << x;
+            return crow::response(200, "JSON received successfully");
+          });
+
+
   //set the port, set the app to run on multiple threads, and run the app
   app.port(18080).multithreaded().run();
-  
+
   eCAL::Finalize();
 }

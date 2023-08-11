@@ -11,13 +11,34 @@
 <textarea id="log" cols=100 rows=50>
     </textarea>
 <!-- File upload form -->
-<form action="http://localhost:18080/uploadfile" method="post" enctype="multipart/form-data">
-    <label for="file">Upload VK calibration JSON:</label>
+<form action="http://localhost:18080/upload_file" method="post" enctype="multipart/form-data">
+    <label for="file">Select a file:</label>
     <input type="file" id="file" name="InputFile" accept="*/*">
     <button type="submit">Upload</button>
 </form>
-<!-- End of file upload form -->
+<!-- JSON upload form -->
+<form id="json-form" action="http://localhost:18080/upload_json" method="post">
+    <label for="a">a:</label>
+    <input type="text" id="a" name="a">
+    <label for="b">b:</label>
+    <input type="text" id="b" name="b">
+    <button type="submit">Upload JSON</button>
+</form>
+<div id="notification"></div>
+<!-- End of JSON upload form -->
 <script>
+    // Submit the JSON data using jQuery
+    $('#json-form').submit(function(e) {
+        e.preventDefault();
+        var a = $('#a').val();
+        var b = $('#b').val();
+        var jsonData = JSON.stringify({ "a": parseInt(a), "b": parseInt(b) });
+
+        $.post("/upload_json", jsonData, function(data) {
+            $('#notification').text(data); // Display the success message
+        });
+    });
+
     var sock = new WebSocket("ws://{{servername}}:18080/ws");
 
     sock.onopen = ()=>{
