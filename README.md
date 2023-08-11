@@ -1,0 +1,5 @@
+# vk-Watchdog
+
+/uploadfile
+/ws
+
